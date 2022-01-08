@@ -28,9 +28,9 @@ public enum ResultEnum {
     EXPORT_DATA_NONE(4004, "没有需要导出的数据"),
 
     // 5001 - 5999 数据库错误
-    DATA_NOT_FOUND(5001, "数据未找到"),
-    DATA_SAVE_ERROR(5002, "数据保存失败"),
-    DATA_UPDATE_ERROR(5003, "数据更新失败"),
+    DATA_NOT_FOUND(5001, "{0}未找到"),
+    DATA_SAVE_ERROR(5002, "{0}保存失败"),
+    DATA_UPDATE_ERROR(5003, "{0}更新失败"),
 
     // 6001 - 6999 其他错误
     TOKEN_ERROR(6001, "非法token或token已过期"),

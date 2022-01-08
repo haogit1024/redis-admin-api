@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class JwtUtil {
                 .signWith(generalKey(), signatureAlgorithm)
                 .compact();
         // 设置redis
-        String redisKey = getRedisKey(userId, digest);
+        String redisKey = getRedisKey(userId);
         redisUtil.set(redisKey, jwt, expirationDate, TimeUnit.MINUTES);
         return jwt;
     }
@@ -106,6 +107,14 @@ public class JwtUtil {
         return this.verifyJwtAndRefresh(jwt);
     }
 
+    public Integer getUserIdFromJwt(String jwt) {
+        Claims claims = this.parseJWT(jwt);
+        if (claims == null) {
+            return -1;
+        }
+        return Integer.parseInt(claims.getId());
+    }
+
     /**
      * 验证 jwt 和续签 jwt
      * @param jwt 可以从方法传入, 也可以从request中获取, 方便单元测试
@@ -122,7 +131,7 @@ public class JwtUtil {
         }
         String userId = claims.getId();
         String digest = claims.get(CommonConstants.Jwt.JWT_DIGEST, String.class);
-        String key = getRedisKey(userId, digest);
+        String key = getRedisKey(userId);
         String redisJwt = redisUtil.get(key).toString();
         if (StringUtils.isBlank(redisJwt) || !jwt.equals(redisJwt)) {
             return false;
@@ -143,7 +152,11 @@ public class JwtUtil {
         return true;
     }
 
-    public String getRedisKey(String userId, String userUuid) {
-        return CommonConstants.RedisKey.REDIS_TOKEN + userId + CommonConstants.Symbol.DOT + userUuid;
+    public String getRedisKey(Integer userId) {
+        return this.getRedisKey(userId.toString());
+    }
+
+    public String getRedisKey(String userId) {
+        return MessageFormat.format(CommonConstants.RedisKey.REDIS_TOKEN, userId);
     }
 }

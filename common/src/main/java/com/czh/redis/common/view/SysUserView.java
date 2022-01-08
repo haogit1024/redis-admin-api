@@ -1,9 +1,7 @@
 package com.czh.redis.common.view;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
@@ -13,6 +11,7 @@ import javax.validation.constraints.NotBlank;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SysUserView extends BaseView {
@@ -29,7 +28,22 @@ public class SysUserView extends BaseView {
     private String password;
 
     /**
-     * 手机号码
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号
      */
     private String phone;
+
+    /**
+     * 最后登陆时间
+     */
+    private Integer lastLoginTime;
+
+    /**
+     * 最后登陆id
+     */
+    private String lastLoginIp;
 }

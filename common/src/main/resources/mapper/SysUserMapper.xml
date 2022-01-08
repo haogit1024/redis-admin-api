@@ -3,27 +3,25 @@
 <mapper namespace="com.czh.redis.common.mapper.SysUserMapper">
   <resultMap id="BaseResultMap" type="com.czh.redis.common.entity.SysUser">
     <!--@mbg.generated-->
-    <!--@Table system_sys_user-->
+    <!--@Table sys_user-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="creator" jdbcType="INTEGER" property="creator" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     <result column="updater" jdbcType="INTEGER" property="updater" />
+    <result column="is_delete" jdbcType="BOOLEAN" property="isDelete" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="last_login_time" jdbcType="INTEGER" property="lastLoginTime" />
     <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
-    <result column="del_flag" jdbcType="BOOLEAN" property="isDelete" />
-    <result column="roles" jdbcType="VARCHAR" property="roles" />
     <result column="is_enable" jdbcType="BOOLEAN" property="isEnable" />
     <result column="salt" jdbcType="VARCHAR" property="salt" />
-    <result column="digest" jdbcType="VARCHAR" property="digest" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, created_time, creator, updated_time, updater, username, `password`, email, phone, 
-    last_login_time, last_login_ip, del_flag, roles, is_enable, salt, digest
+    id, created_time, creator, updated_time, updater, is_delete, username, `password`, 
+    email, phone, last_login_time, last_login_ip, is_enable, salt
   </sql>
 </mapper>

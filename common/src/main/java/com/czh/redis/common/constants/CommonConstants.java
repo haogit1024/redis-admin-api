@@ -20,7 +20,7 @@ public interface CommonConstants {
     }
 
     class RedisKey {
-        public static final String REDIS_TOKEN = "jwt_token:";
+        public static final String REDIS_TOKEN = "jwt_token:user_id_{0}";
     }
 
     class Jwt {

@@ -36,7 +36,7 @@ public class SysUserController extends BaseRestController<SysUserService, SysUse
     }
 
     @PostMapping("register")
-    public SysUserView register(@RequestBody SysUserView vo) {
-        return null;
+    public Integer register(@RequestBody SysUserView vo) {
+        return getServiceInstance().register(vo.getUsername(), vo.getPassword(), vo.getEmail(), vo.getPhone());
     }
 }

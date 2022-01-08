@@ -1,6 +1,7 @@
 package com.czh.redis.admin.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.czh.redis.common.emums.ResultEnum;
 import com.czh.redis.common.entity.SysUser;
 import com.czh.redis.common.mapper.SysUserMapper;
@@ -10,17 +11,12 @@ import com.czh.redis.common.util.SpringUtil;
 import com.czh.redis.common.util.Utils;
 import com.czh.redis.common.view.SysUserView;
 import com.czh.redis.framework.exception.BusinessException;
-import com.czh.redis.framework.security.admin.AdminUserDetails;
 import com.czh.redis.framework.service.BaseCurdService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
-
-import static com.czh.redis.common.constants.CommonConstants.Admin.ADMIN_USER_DETAILS_REQ_KEY;
-import static com.czh.redis.common.emums.CommonEnum.Role.ADMIN;
+import java.time.LocalDateTime;
 
 /**
  * @author czh
@@ -28,8 +24,6 @@ import static com.czh.redis.common.emums.CommonEnum.Role.ADMIN;
  */
 @Service
 public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysUserView> {
-    @Autowired
-    PasswordEncoder passwordEncoder;
     @Autowired
     JwtUtil jwtUtil;
     @Autowired
@@ -51,22 +45,21 @@ public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysU
      */
     @Override
     public Integer insert(SysUserView vo) {
-        AdminUserDetails userDetails = SpringUtil.getRequestAttribute(ADMIN_USER_DETAILS_REQ_KEY, AdminUserDetails.class);
-        String encodePassword = passwordEncoder.encode(vo.getPassword());
+        // TODO 验证权限
+        boolean usernameUsed = this.count(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUsername, vo.getUsername())) > 0;
+        if (usernameUsed) {
+            throw new BusinessException(ResultEnum.USER_HAS_EXISTED);
+        }
         Integer author = SpringUtil.getJwtUserId();
         SysUser sysUser = new SysUser();
-        if (userDetails != null && Objects.equals(userDetails.getRoles(), ADMIN.getValue())) {
-            // 管理员创建默认开启
-            sysUser.setIsEnable(true);
-        } else {
-            // 用户注册, 需要管理员审核
-            sysUser.setIsEnable(false);
-        }
         Utils.copyPropertiesIgnoreNull(vo, sysUser);
         // 手机号, 邮箱加密
         sysUser.setCreator(author);
         sysUser.setUpdater(author);
-        sysUser.setPassword(encodePassword);
+        // 设置密码
+        String salt = this.generateSalt();
+        sysUser.setSalt(salt);;
+        sysUser.setPassword(this.generatePassword(vo.getPassword(), salt));
         if (!save(sysUser)) {
             throw new BusinessException(ResultEnum.DATA_SAVE_ERROR);
         }
@@ -75,14 +68,10 @@ public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysU
 
     @Override
     public Integer update(SysUserView vo) {
-        AdminUserDetails userDetails = SpringUtil.getRequestAttribute(ADMIN_USER_DETAILS_REQ_KEY, AdminUserDetails.class);
+        // TODO 验证权限
         vo.setPassword(null);
         SysUser sysUser = new SysUser();
         Utils.copyPropertiesIgnoreNull(vo, sysUser);
-        if (userDetails == null || !Objects.equals(userDetails.getRoles(), ADMIN.getValue())) {
-            // 不是管理员
-            sysUser.setIsEnable(null);
-        }
         int ret = getBaseMapper().updateById(sysUser);
         if (ret != 1) {
             throw new BusinessException(ResultEnum.DATA_UPDATE_ERROR);
@@ -102,8 +91,8 @@ public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysU
         if (sysUser == null) {
             throw new BusinessException(ResultEnum.USER_NOT_EXISTED);
         }
-        if (!passwordEncoder.matches(password, sysUser.getPassword())) {
-            throw new BusinessException(ResultEnum.USER_LOGIN_ERROR);
+        if (!sysUser.getPassword().equals(this.generatePassword(password, sysUser.getSalt()))) {
+            throw new BusinessException(ResultEnum.USER_PASSWORD_NOT_MATCHES);
         }
         return jwtUtil.createJwt(sysUser.getId().toString(), sysUser.getUsername());
     }
@@ -115,7 +104,7 @@ public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysU
      */
     public boolean logout(@NotNull Integer userId) {
         SysUser sysUser = getById(userId);
-        String key = jwtUtil.getRedisKey(userId.toString(), sysUser.getUsername());
+        String key = jwtUtil.getRedisKey(userId.toString());
         redisUtil.del(key);
         return true;
     }
@@ -130,13 +119,17 @@ public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysU
     public boolean updatePwd(@NotNull(message = "id不能为空") Integer id,
                              @NotNull(message = "旧密码不能为空") String oldPwd,
                              @NotNull(message = "新密码不能为空") String newPwd) {
+        // TODO 验证权限
         SysUser sysUser = getById(id);
-        if (!passwordEncoder.matches(oldPwd, sysUser.getPassword())) {
-            throw new BusinessException(ResultEnum.USER_PASSWORD_NOT_MATCHES);
+        if (sysUser == null) {
+            throw new BusinessException(ResultEnum.DATA_NOT_FOUND.format("用户"));
         }
-        String encodePassword = passwordEncoder.encode(newPwd);
-        sysUser.setPassword(encodePassword);
+        if (!sysUser.getPassword().equals(this.generatePassword(oldPwd, sysUser.getSalt()))) {
+            throw new BusinessException(ResultEnum.USER_PASSWORD_NOT_MATCHES.append(", 请确认旧密码是否正确"));
+        }
+        sysUser.setUpdatedTime(LocalDateTime.now());
         sysUser.setUpdater(SpringUtil.getJwtUserId());
+        sysUser.setPassword(this.generatePassword(newPwd, sysUser.getSalt()));
         if (!updateById(sysUser)) {
             throw new BusinessException(ResultEnum.DATA_UPDATE_ERROR);
         }
@@ -157,11 +150,24 @@ public class SysUserService extends BaseCurdService<SysUserMapper, SysUser, SysU
      * @param password
      * @return
      */
-    public SysUserView register(@NotNull(message = "用户名不能为空") String username,
+    public Integer register(@NotNull(message = "用户名不能为空") String username,
                                 @NotNull(message = "密码不能为空") String password,
                                 String email,
                                 String phone) {
-        String encodePassword = passwordEncoder.encode(password);
-        return null;
+        SysUserView vo = SysUserView.builder()
+                .username(username)
+                .password(password)
+                .phone(phone)
+                .email(email)
+                .build();
+        return this.insert(vo);
+    }
+
+    private String generateSalt() {
+        return Utils.randomStr(6);
+    }
+
+    private String generatePassword(String password, String salt) {
+        return Utils.md5(password + salt);
     }
 }

@@ -11,10 +11,10 @@ CREATE TABLE sys_user (
   phone             varchar(255)    NULL        DEFAULT NULL COMMENT '手机号',
   last_login_time   int(11)         NULL        DEFAULT NULL COMMENT '最后登陆时间',
   last_login_ip     varchar(255)    NULL        DEFAULT NULL COMMENT '最后登陆id',
-  del_flag          tinyint(1)      NOT NULL    DEFAULT 0    COMMENT '逻辑删除 0:有效/1:无效',
-  roles             varchar(255)    NULL        DEFAULT NULL COMMENT '角色',
+  -- del_flag          tinyint(1)      NOT NULL    DEFAULT 0    COMMENT '逻辑删除 0:有效/1:无效',
+  -- roles             varchar(255)    NULL        DEFAULT NULL COMMENT '角色',
   is_enable         tinyint(1)      NOT NULL    DEFAULT 0    COMMENT '是否启用 0:未启用/1:启用',
   salt              varchar(20)     NOT NULL    COMMENT '盐',
-  digest            varchar(255)    NOT NULL    COMMENT '对密钥的摘要',
+  -- digest            varchar(255)    NOT NULL    COMMENT '对密钥的摘要',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;

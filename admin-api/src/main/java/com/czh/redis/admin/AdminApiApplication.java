@@ -10,8 +10,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author czh
  * @date 2020/6/9
  */
-@SpringBootApplication(scanBasePackages = "com.czh.web")
-@MapperScan("com.czh.web.common.mapper")
+@SpringBootApplication(scanBasePackages = "com.czh.redis")
+@MapperScan("com.czh.redis.common.mapper")
 public class AdminApiApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(AdminApiApplication.class, args);

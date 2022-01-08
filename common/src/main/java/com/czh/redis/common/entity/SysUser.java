@@ -1,18 +1,26 @@
 package com.czh.redis.common.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.util.Date;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "system_sys_user")
+@TableName(value = "sys_user")
 public class SysUser extends BaseEntity {
+    public static final String COL_DEL_FLAG = "del_flag";
+    public static final String COL_ROLES = "roles";
+    public static final String COL_DIGEST = "digest";
     /**
      * 用户名
      */
@@ -22,7 +30,7 @@ public class SysUser extends BaseEntity {
     /**
      * 密码
      */
-    @TableField(value = "password")
+    @TableField(value = "`password`")
     private String password;
 
     /**
@@ -50,12 +58,6 @@ public class SysUser extends BaseEntity {
     private String lastLoginIp;
 
     /**
-     * 角色
-     */
-    @TableField(value = "roles")
-    private String roles;
-
-    /**
      * 是否启用 0:未启用/1:启用
      */
     @TableField(value = "is_enable")
@@ -66,12 +68,6 @@ public class SysUser extends BaseEntity {
      */
     @TableField(value = "salt")
     private String salt;
-
-    /**
-     * 对密钥的摘要
-     */
-    @TableField(value = "digest")
-    private String digest;
 
     public static final String COL_USERNAME = "username";
 
@@ -85,11 +81,7 @@ public class SysUser extends BaseEntity {
 
     public static final String COL_LAST_LOGIN_IP = "last_login_ip";
 
-    public static final String COL_ROLES = "roles";
-
     public static final String COL_IS_ENABLE = "is_enable";
 
     public static final String COL_SALT = "salt";
-
-    public static final String COL_DIGEST = "digest";
 }
