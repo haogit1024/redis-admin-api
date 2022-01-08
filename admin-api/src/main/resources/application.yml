@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: dev
+  messages:
+    encoding: UTF-8
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+server:
+  port: 8001
