@@ -2,3 +2,4 @@
 2. 修改readme
 3. 优化JwtUtil和升级jwt库
 4. SysUserController单元测试
+5. 升级到springboot 2.6

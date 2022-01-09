@@ -20,12 +20,11 @@ public enum ResultEnum {
 
     // 3001 - 3999 系统错误
     SERVER_ERROR(3001, "系统繁忙"),
+    EXPORT_DATA_NONE(3002, "没有需要导出的数据"),
 
-    // 4001 - 4999 业务错误(备用, 看视具体业务情况要不要用)
-    DIGEST_ERROR(4001, "特征计算错误, 请检查secret key是否正确"),
-    AES_ENCODE_ERROR(4002, "加密失败"),
-    AES_DECODE_ERROR(4003, "解密失败, 请检查密钥是否正确"),
-    EXPORT_DATA_NONE(4004, "没有需要导出的数据"),
+    // 4101 - 4100 redis错误
+    REDIS_CONNECTION_ERROR(4001, "redis链接失败，{0}"),
+    TYPE_NOT_SUPPER(4002, "不支持数据类型，type: {}"),
 
     // 5001 - 5999 数据库错误
     DATA_NOT_FOUND(5001, "{0}未找到"),

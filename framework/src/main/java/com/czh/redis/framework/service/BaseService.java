@@ -15,5 +15,5 @@ import org.springframework.validation.annotation.Validated;
 @Transactional
 public class BaseService<M extends BaseMapper<E>, E> extends ServiceImpl<M, E> {
     @Autowired
-    RedisUtil redisUtil;
+    protected RedisUtil redisUtil;
 }

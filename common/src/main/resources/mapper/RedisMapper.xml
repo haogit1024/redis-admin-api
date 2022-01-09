@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czh.redis.common.mapper.RedisMapper">
+  <resultMap id="BaseResultMap" type="com.czh.redis.common.entity.Redis">
+    <!--@mbg.generated-->
+    <!--@Table redis-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="creator" jdbcType="INTEGER" property="creator" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="updater" jdbcType="INTEGER" property="updater" />
+    <result column="is_delete" jdbcType="BOOLEAN" property="isDelete" />
+    <result column="host" jdbcType="LONGVARCHAR" property="host" />
+    <result column="port" jdbcType="LONGVARCHAR" property="port" />
+    <result column="password" jdbcType="LONGVARCHAR" property="password" />
+    <result column="last_connection_time" jdbcType="INTEGER" property="lastConnectionTime" />
+    <result column="last_connection_ip" jdbcType="VARCHAR" property="lastConnectionIp" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, created_time, creator, updated_time, updater, is_delete, `host`, port, `password`, 
+    last_connection_time, last_connection_ip, `name`
+  </sql>
+</mapper>
