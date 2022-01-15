@@ -27,3 +27,5 @@ target/**
 **/*.class
 
 .temp
+
+**/.DS_Store
