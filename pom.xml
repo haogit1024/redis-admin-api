@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.czh.redis</groupId>
-    <artifactId>redis-api</artifactId>
+    <artifactId>redis-admin-api</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
