@@ -1,5 +1,6 @@
 package com.czh.redis.admin.service;
 
+import com.czh.redis.common.util.Utils;
 import com.czh.redis.common.view.RedisView;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Set;
 
 @SpringBootTest
 @ActiveProfiles("local")
@@ -32,11 +33,14 @@ class RedisServiceTest {
 
     @Test
     void get() {
-        service.get(1);
+        RedisView view = service.get(1);
+        System.out.println(Utils.object2Json(view));
     }
 
     @Test
     void listKeys() {
+        Set<String> keys = service.listKeys(1, 1);
+        System.out.println(Utils.object2Json(keys));
     }
 
     @Test
@@ -66,10 +70,17 @@ class RedisServiceTest {
     void setValue(){
     }
 
+    @Test
     void deleteValue(){
     }
 
     @Test
     void testGetJedis() {
+    }
+
+    @Test
+    void getRedisInfo() {
+        RedisView view  = service.getRedisView(1);
+        System.out.println(Utils.object2Json(view));
     }
 }

@@ -20,7 +20,3 @@ mvn clean package -Pprod -Dmaven.test.skip=true
 spring-boot + maven 多模块架构
 ## api设计
 1. admin restful
-2. app json-rpc
-## 端口
-1. admin用8001端口
-2. app用8002端口

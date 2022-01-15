@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class RedisService extends BaseCurdService<RedisMapper, Redis, RedisView>
         return new RedisView(redis, sysConfig.getPrivateKey());
     }
 
-    public Jedis getJedis(@NotNull Integer id) {
+    private Jedis getJedis(@NotNull Integer id) {
         RedisView redisView = getRedisView(id);
         try {
             return getJedis(redisView);
@@ -104,9 +105,14 @@ public class RedisService extends BaseCurdService<RedisMapper, Redis, RedisView>
         }
     }
 
-    public Set<String> listKeys(Integer id, Integer db) {
-        Jedis jedis = this.getJedis(id);
+    public Jedis getJedis(@NotNull Integer id, @NotNull Integer db) {
+        Jedis jedis = getJedis(id);
         jedis.select(db);
+        return jedis;
+    }
+
+    public Set<String> listKeys(Integer id, Integer db) {
+        Jedis jedis = this.getJedis(id, db);
         return jedis.keys("*");
     }
 
@@ -158,12 +164,9 @@ public class RedisService extends BaseCurdService<RedisMapper, Redis, RedisView>
         return view;
     }
 
-    public Set<String> listKey(Integer id, Integer db) {
-        Jedis jedis = getJedis(id, db);
-        return jedis.keys("*");
-    }
-
-    public RedisValueView getValue(Integer id, Integer db, String key) {
+    public RedisValueView getValue(@NotNull Integer id,
+                                   @NotNull Integer db,
+                                   @NotBlank String key) {
         Jedis jedis = getJedis(id, db);
         String type = jedis.type(key);
         long ttl = jedis.ttl(key);
@@ -193,14 +196,19 @@ public class RedisService extends BaseCurdService<RedisMapper, Redis, RedisView>
         return new RedisValueView(key, ttl, value, type, len);
     }
 
-    public Integer setValue(Integer id, Integer db, String key, String value) {
-        // TODO 支持5中数据类型的设置，目前只支持单个key的string类型设置
+    public Integer setValue(@NotNull Integer id,
+                            @NotNull Integer db,
+                            @NotBlank String key,
+                            @NotNull String value) {
+        // TODO 支持5中数据类型的设置，目前只支持单个key的string类型设置, 验证value能不能为空字符串
         Jedis jedis = getJedis(id, db);
         jedis.set(key, value);
         return TRUE.getValue();
     }
 
-    public Integer deleteValue(Integer id, Integer db, String key) {
+    public Integer deleteValue(@NotNull Integer id,
+                               @NotNull Integer db,
+                               @NotBlank String key) {
         Jedis jedis = getJedis(id, db);
         jedis.del(key);
         return TRUE.getValue();
@@ -211,13 +219,6 @@ public class RedisService extends BaseCurdService<RedisMapper, Redis, RedisView>
         if (StringUtils.isNotBlank(view.getPassword())) {
             jedis.auth(view.getPassword());
         }
-        return jedis;
-    }
-
-    private Jedis getJedis(Integer id, Integer db) {
-        RedisView view = getRedisView(id);
-        Jedis jedis = getJedis(view);
-        jedis.select(db);
         return jedis;
     }
 }
