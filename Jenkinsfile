@@ -8,7 +8,7 @@ boolean isService(String url) {
     try {
         def httpStatus = get.getResponseCode();
         println('httpStatus: ' + httpStatus)
-        return httpStatus == 200 || httpStatus == 405
+        return httpStatus == 200 || httpStatus == 405 || httpStatus == 500
     } catch(Exception e) {
         return false;
     }
@@ -37,44 +37,59 @@ void confirmServer(String url, int waitTime) {
 pipeline{
     agent any
     environment {
-        tomcat_prod = 8081
-        tomcat_home = '/opt/tomcat8081'
+        tomcat_prod = 8080
+        tomcat_home = '/opt/tomcat'
+        git_branch='dev'
+        profile_active='dev'
     }
     stages {
-        stage('Clone') {
+        stage('Git Pull') {
             steps {
-                git branch: 'master', credentialsId: '8cf884cb-95a1-40f5-a317-9b310d6826d4', url: 'https://code.aliyun.com/120715979/web-framework.git'
+                git branch: 'master', credentialsId: 'git-ssh', url: 'git@github.com:haogit1024/redis-admin-api.git'
             }
         }
         stage("Stop Tomcat") {
             steps {
-                sh "python3 /root/scripts/kill_port.py $tomcat_prod"
-                sleep(2)
+                sh "${tomcat_home}/bin/shutdown.sh"
+                sleep(3)
+                sh"""
+                tomcat_pid=\$(ps -ef | grep ${tomcat_home} | grep -v grep | awk '{print \$2}')
+                    echo 'tomcat_pid: '
+                    echo \${tomat_pid}
+                    for id in \${tomcat_pid}
+                        do
+                            kill \$id
+                            echo "killed \${id}"
+                        done
+                """
             }
         }
         stage('Build') {
             steps {
                 echo '='*50 + 'Build' + '='*50
                 sh"""
-                mvn clean package -Dmaven.test.skip=true
+                mvn clean package -Pdev -Dmaven.test.skip=true
+                cd ./admin-api/target
+                ls
                 """
             }
         }
         stage('Deploy') {
             steps{
-                sleep(2)
                 echo '='*50 + 'Deploy' + '='*50
                 sh "pwd"
                 sh"""
-                cp app-api/target/app-api.war $tomcat_home/webapps/
+                cp -rf admin-api/target/admin-api.war ${tomcat_home}/webapps/
                 """
-                sh "sudo python3 $tomcat_home/webapps/restart_tomcat2.0.py $tomcat_prod"
+                sh'''
+                ${tomcat_home}/bin/startup.sh
+                '''
             }
         }
-        stage('Confirm server') {
+        stage('Confirm Deploy') {
             steps {
-                echo '=' * 50 + 'confirm deploy' + '=' * 50
-                confirmServer("http://xxxxxxxx/app-api/user/login", 5)
+                echo '=' * 50 + 'Confirm Deploy' + '=' * 50
+                confirmServer("http://localhost:8080/admin-api/sysUser/login", 5)
             }
         }
     }
