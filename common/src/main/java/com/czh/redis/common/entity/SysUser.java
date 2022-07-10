@@ -18,9 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "sys_user")
 public class SysUser extends BaseEntity {
-    public static final String COL_DEL_FLAG = "del_flag";
-    public static final String COL_ROLES = "roles";
-    public static final String COL_DIGEST = "digest";
     /**
      * 用户名
      */

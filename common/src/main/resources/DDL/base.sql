@@ -1,4 +1,4 @@
-CREATE TABLE lsh_platform.YOUR_TABLE_NAME
+CREATE TABLE czh.YOUR_TABLE_NAME
 (
     id              int(11)         NOT NULL    AUTO_INCREMENT,
     creator         int(11)         NOT NULL    COMMENT '创建人',

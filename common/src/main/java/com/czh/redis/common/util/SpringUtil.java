@@ -91,7 +91,7 @@ public class SpringUtil implements ApplicationContextAware {
         }
         Object obj = getRequest().getAttribute("userId");
         if (obj == null) {
-            return null;
+            return -1;
         }
         return Integer.parseInt(obj.toString());
     }

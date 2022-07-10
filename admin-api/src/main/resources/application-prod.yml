@@ -47,7 +47,7 @@ jwt:
   # 过期时间, 单位分
   expirationDate: 60
   # token 的 http header key值
-  headerName: lsh-admin-token
+  headerName: czh-admin-token
   key: 2Ke6TiOmGSWR9FiU2Ke6TiOmGSWR9FiU2Ke6TiOmGSWR9FiU
   # 最小刷新时间, 单位分
   minRefreshDate: 30

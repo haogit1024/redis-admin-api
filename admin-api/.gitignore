@@ -27,3 +27,4 @@ logs
 
 # dev config
 src/main/resources/application-local.yml
+/target/

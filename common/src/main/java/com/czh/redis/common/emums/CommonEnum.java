@@ -86,4 +86,17 @@ public interface CommonEnum {
             this.value = value;
         }
     }
+
+    @Getter
+    enum FileType {
+        DIR(1, "文件夹"),
+        FILE(2, "文件"),
+        ;
+        private final Integer value;
+        private final String name;
+        FileType(Integer value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+    }
 }
