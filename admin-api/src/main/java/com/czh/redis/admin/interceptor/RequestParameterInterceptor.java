@@ -2,6 +2,7 @@ package com.czh.redis.admin.interceptor;
 
 import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ public class RequestParameterInterceptor implements HandlerInterceptor {
         if (!method.equals("option")) {
             String contentType = request.getContentType();
             String body;
-            if (contentType.contains("form")) {
+            if (StringUtils.isNotBlank(contentType) && contentType.contains("form")) {
                 // 表单请求内容
                 StringBuilder bodyBuilder = new StringBuilder();
                 Enumeration<String> keys = request.getParameterNames();
