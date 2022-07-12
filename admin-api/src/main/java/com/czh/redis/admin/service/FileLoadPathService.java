@@ -50,12 +50,11 @@ public class FileLoadPathService extends BaseCurdService<FileLoadPathMapper, Fil
         return (List<MyFileUtil.FileItem>) redisUtil.get(key);
     }
 
-    public void getFileContent(String path, String filename) throws IOException {
-        String filepath = MyFileUtil.join(path, filename);
-        File file = new File(filepath);
+    public void getFileContent(String path) throws IOException {
+        File file = new File(path);
         if (!file.exists()) {
-            log.error("文件不存在：{}", filepath);
-            throw new BusinessException(ResultEnum.COMMON_ERROR.format("文件不存在：" + filepath));
+            log.error("文件不存在：{}", path);
+            throw new BusinessException(ResultEnum.COMMON_ERROR.format("文件不存在：" + path));
         }
         MyFileUtil.responseFileContent(response, file);
     }

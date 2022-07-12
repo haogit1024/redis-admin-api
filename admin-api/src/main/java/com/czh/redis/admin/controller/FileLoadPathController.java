@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class FileLoadPathController extends BaseRestController<FileLoadPathServi
     }
 
     @GetMapping("file_content")
-    public void getFileContent(String path, String filename) throws IOException {
-        getServiceInstance().getFileContent(path, filename);
+    public void getFileContent(String path) throws IOException {
+        getServiceInstance().getFileContent(path);
     }
 }
