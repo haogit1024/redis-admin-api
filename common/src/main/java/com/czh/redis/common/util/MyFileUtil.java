@@ -7,7 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 @Slf4j
@@ -55,6 +61,18 @@ public class MyFileUtil {
             sb.append(File.separator).append(path);
         }
         return sb.toString();
+    }
+
+    public static void responseFileContent(HttpServletResponse response, File file) throws IOException {
+        byte[] bytes = new byte[1024 * 10];
+        int len;
+        FileInputStream fileInputStream = new FileInputStream(file);
+        String contentType = Files.probeContentType(file.toPath());
+        response.setHeader("Content-Type", contentType);
+        ServletOutputStream os = response.getOutputStream();
+        while ((len = fileInputStream.read(bytes)) != -1) {
+            os.write(bytes, 0, len);
+        }
     }
 
     @Data

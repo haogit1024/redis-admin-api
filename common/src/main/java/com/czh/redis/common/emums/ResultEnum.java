@@ -30,6 +30,7 @@ public enum ResultEnum {
     DATA_NOT_FOUND(5001, "{0}未找到"),
     DATA_SAVE_ERROR(5002, "{0}保存失败"),
     DATA_UPDATE_ERROR(5003, "{0}更新失败"),
+    COMMON_ERROR(5004, ""),
 
     // 6001 - 6999 其他错误
     TOKEN_ERROR(6001, "非法token或token已过期"),
