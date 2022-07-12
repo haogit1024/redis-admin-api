@@ -20,8 +20,8 @@ import java.util.List;
 @RequestMapping("file_load_path")
 public class FileLoadPathController extends BaseRestController<FileLoadPathService, FileLoadPathMapper, FileLoadPath, BaseView> {
     @GetMapping("file_item")
-    public List<MyFileUtil.FileItem> getFileItem(Integer id, String path, String filename) {
-        return getServiceInstance().getFileItems(id, path, filename);
+    public List<MyFileUtil.FileItem> getFileItem(Integer id, String path) {
+        return getServiceInstance().getFileItems(id, path);
     }
 
     @GetMapping("file_content")

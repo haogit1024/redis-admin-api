@@ -45,9 +45,8 @@ public class FileLoadPathService extends BaseCurdService<FileLoadPathMapper, Fil
         });
     }
 
-    public List<MyFileUtil.FileItem> getFileItems(@NotNull Integer id, @NotBlank String path, @NotBlank String filename) {
-        String filepath = MyFileUtil.join(path, filename);
-        String key = MessageFormat.format(REDIS_FILE_LOAD_PATH_FILE_LIST, id, filepath);
+    public List<MyFileUtil.FileItem> getFileItems(@NotNull Integer id, @NotBlank String path) {
+        String key = MessageFormat.format(REDIS_FILE_LOAD_PATH_FILE_LIST, id, path);
         return (List<MyFileUtil.FileItem>) redisUtil.get(key);
     }
 

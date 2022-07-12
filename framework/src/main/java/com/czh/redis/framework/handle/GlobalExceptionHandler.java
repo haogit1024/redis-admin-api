@@ -49,7 +49,10 @@ public class GlobalExceptionHandler {
     public PlatformResult handleBindGetException(ConstraintViolationException e) {
         List<String> defaultMsg = e.getConstraintViolations()
                 .stream()
-                .map(ConstraintViolation::getMessage)
+                .map(constraintViolation -> {
+                    String parameter = constraintViolation.getPropertyPath().toString();
+                    return parameter + ": " + constraintViolation.getMessage();
+                })
                 .collect(Collectors.toList());
         String errMsg = e.getMessage();
         if (CollectionUtils.isNotEmpty(defaultMsg)) {
