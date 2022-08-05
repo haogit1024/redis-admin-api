@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Component
 @Configurable
-@EnableScheduling
+//@EnableScheduling
 @Transactional(rollbackFor = Exception.class)
 @Slf4j
 public class Schedule {
@@ -31,6 +31,7 @@ public class Schedule {
      */
     @Scheduled(fixedDelay = 60 * 10 * 1000)
     public void refreshPath() {
+        log.info("刷新文件定时任务开始执行");
         List<FileLoadPath> pathList = fileLoadPathService.list();
         pathList.forEach(fileLoadPathService::cachePathFile);
     }
