@@ -2,6 +2,7 @@ package com.czh.redis.framework.controller;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.czh.redis.common.view.PageView;
+import com.czh.redis.framework.annotation.Response;
 import com.czh.redis.framework.service.BaseCurdService;
 import com.czh.redis.common.entity.BaseEntity;
 import com.czh.redis.common.view.BaseView;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @author czh
  * @date 2020/6/10
  */
+@Response
 public class BaseRestController<S extends BaseCurdService<M, E, V>, M extends BaseMapper<E>, E extends BaseEntity, V extends BaseView> extends BaseController<S> {
 
     @GetMapping("/{id}")

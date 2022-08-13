@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 
-@Response
 @RestController
 @RequestMapping("file_load_path")
+@Response
 public class FileLoadPathController extends BaseRestController<FileLoadPathService, FileLoadPathMapper, FileLoadPath, BaseView> {
     @GetMapping("file_item")
     public List<MyFileUtil.FileItem> getFileItem(Integer id, String path) {

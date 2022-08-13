@@ -1,6 +1,7 @@
 package com.czh.redis.framework.controller;
 
 import com.czh.redis.common.util.SpringUtil;
+import com.czh.redis.framework.annotation.Response;
 import com.czh.redis.framework.service.BaseService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +14,7 @@ import java.lang.reflect.ParameterizedType;
  */
 @Validated
 @Transactional(rollbackFor = Exception.class)
+@Response
 public class BaseController<S extends BaseService> {
     public S getServiceInstance() {
         try {
