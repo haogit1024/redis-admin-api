@@ -64,6 +64,7 @@ public class MyFileUtil {
     }
 
     public static void responseFileContent(HttpServletResponse response, File file) throws IOException {
+        // todo 加入requestHeader的处理
         byte[] bytes = new byte[1024 * 10];
         int len;
         FileInputStream fileInputStream = new FileInputStream(file);
